@@ -1,0 +1,21 @@
+alias: "LED Strip - Enable Audio"
+description: "Enable music mode for the Aqara T1 LED strip."
+fields:
+  led_strip:
+    name: "LED Strip"
+    description: "Select the Aqara T1 LED strip device"
+    required: true
+    selector:
+      device:
+        integration: zha
+sequence:
+  - action: zha_toolkit.attr_write
+    data:
+      ieee: >-
+        {{ device_attr(led_strip, 'identifiers') | selectattr(0,'eq','zha')
+        | map(attribute=1) | first }}
+      endpoint: 1
+      cluster: 64704
+      attribute: 1308
+      attr_val: 1
+      manf: 4447
