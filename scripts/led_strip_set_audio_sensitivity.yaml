@@ -1,0 +1,34 @@
+alias: "LED Strip - Set Audio Sensitivity"
+description: "Set the microphone sensitivity for music mode."
+fields:
+  led_strip:
+    name: "LED Strip"
+    description: "Select the Aqara T1 LED strip device"
+    required: true
+    selector:
+      device:
+        integration: zha
+  sensitivity:
+    name: "Sensitivity"
+    description: "Audio sensitivity level."
+    required: true
+    selector:
+      select:
+        options:
+          - label: "Low"
+            value: "0"
+          - label: "Medium"
+            value: "1"
+          - label: "High"
+            value: "2"
+sequence:
+  - action: zha_toolkit.attr_write
+    data:
+      ieee: >-
+        {{ device_attr(led_strip, 'identifiers') | selectattr(0,'eq','zha')
+        | map(attribute=1) | first }}
+      endpoint: 1
+      cluster: 64704
+      attribute: 1310
+      attr_val: "{{ sensitivity | int }}"
+      manf: 4447
