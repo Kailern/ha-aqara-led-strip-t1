@@ -1,0 +1,36 @@
+alias: "LED Strip - Set Audio Effect"
+description: "Set the visual effect for music mode."
+fields:
+  led_strip:
+    name: "LED Strip"
+    description: "Select the Aqara T1 LED strip device"
+    required: true
+    selector:
+      device:
+        integration: zha
+  effect:
+    name: "Effect"
+    description: "Visual effect in music mode."
+    required: true
+    selector:
+      select:
+        options:
+          - label: "Random"
+            value: "0"
+          - label: "Blink"
+            value: "1"
+          - label: "Rainbow"
+            value: "2"
+          - label: "Wave"
+            value: "3"
+sequence:
+  - action: zha_toolkit.attr_write
+    data:
+      ieee: >-
+        {{ device_attr(led_strip, 'identifiers') | selectattr(0,'eq','zha')
+        | map(attribute=1) | first }}
+      endpoint: 1
+      cluster: 64704
+      attribute: 1309
+      attr_val: "{{ effect | int }}"
+      manf: 4447
