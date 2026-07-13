@@ -1,0 +1,32 @@
+alias: "LED Strip - Set Length"
+description: "Set the physical length of the LED strip in meters. Internal value = length × 5 (e.g., 1.0m = 5)."
+fields:
+  led_strip:
+    name: "LED Strip"
+    description: "Select the Aqara T1 LED strip device"
+    required: true
+    selector:
+      device:
+        integration: zha
+  length:
+    name: "Length (m)"
+    description: "Physical length in meters (1.0 to 10.0, step 0.2). Internal value = length × 5."
+    required: true
+    selector:
+      number:
+        min: 1.0
+        max: 10.0
+        step: 0.2
+        mode: box
+        unit_of_measurement: "m"
+sequence:
+  - action: zha_toolkit.attr_write
+    data:
+      ieee: >-
+        {{ device_attr(led_strip, 'identifiers') | selectattr(0,'eq','zha')
+        | map(attribute=1) | first }}
+      endpoint: 1
+      cluster: 64704
+      attribute: 1307
+      attr_val: "{{ (length * 5) | int }}"
+      manf: 4447
