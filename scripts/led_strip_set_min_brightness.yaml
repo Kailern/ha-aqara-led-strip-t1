@@ -1,0 +1,32 @@
+alias: "LED Strip - Set Min Brightness"
+description: "Set the minimum brightness level (0-99%)."
+fields:
+  led_strip:
+    name: "LED Strip"
+    description: "Select the Aqara T1 LED strip device"
+    required: true
+    selector:
+      device:
+        integration: zha
+  min_brightness:
+    name: "Min Brightness (%)"
+    description: "Minimum brightness level (0-99)."
+    required: true
+    selector:
+      number:
+        min: 0
+        max: 99
+        step: 1
+        mode: box
+        unit_of_measurement: "%"
+sequence:
+  - action: zha_toolkit.attr_write
+    data:
+      ieee: >-
+        {{ device_attr(led_strip, 'identifiers') | selectattr(0,'eq','zha')
+        | map(attribute=1) | first }}
+      endpoint: 1
+      cluster: 64704
+      attribute: 1301
+      attr_val: "{{ min_brightness | int }}"
+      manf: 4447
